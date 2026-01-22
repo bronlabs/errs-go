@@ -16,7 +16,7 @@ import (
 	"github.com/bronlabs/errs-go/errs"
 )
 
-var ValidationErr = errs.NewType("validation failed")
+var ValidationErr = errs.New("validation failed")
 
 func main() {
 	err := ValidationErr.
