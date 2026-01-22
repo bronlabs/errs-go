@@ -52,11 +52,6 @@ func TestSanity(t *testing.T) {
 	require.True(t, errs.Is(e6, e4))
 	require.True(t, errs.Is(e6, e5))
 	require.True(t, errs.Is(e6, e6))
-
-	// require.Fail(t, "%+v", e)
-	// require.Fail(t, "%+v", e2)
-	// require.Fail(t, "%+v", e3)
-	// require.Fail(t, "%+v", e4)
 }
 
 var errFoo = errs.New("FOO")
