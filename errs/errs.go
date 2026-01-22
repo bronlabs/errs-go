@@ -19,10 +19,17 @@ const (
 )
 
 var (
+	// Is reports whether any error in error's chain matches the target.
+	// It is an alias for errors.Is.
 	Is = errors.Is
+
+	// As finds the first error in error's chain that matches the target, and if so,
+	// sets the target to that error value. It is an alias for errors.As.
 	As = errors.As
 )
 
+// Unwrap returns the wrapped error(s) from err, supporting both single and
+// multi-error unwrap forms. It returns nil when err does not wrap anything.
 func Unwrap(err error) []error {
 	//nolint:errorlint // internal error handling
 	switch x := err.(type) {
@@ -35,23 +42,32 @@ func Unwrap(err error) []error {
 	return nil
 }
 
+// Error represents a typed error that can carry tags and a stack frame.
 type Error interface {
 	error
 	fmt.Formatter
 
+	// WithTag adds or overwrites a tag on the error.
 	WithTag(string, any) Error
+	// WithMessage appends or sets a formatted message on the error.
 	WithMessage(format string, args ...any) Error
+	// WithStackFrame captures and attaches a stack frame to the error.
 	WithStackFrame() Error
+	// Tags returns the tags attached to the error or nil when none exist.
 	Tags() map[string]any
+	// StackFrame returns the attached stack frame or nil when none exists.
 	StackFrame() *StackFrame
 }
 
+// New creates a new sentinel error with a formatted message.
 func New(format string, args ...any) Error {
 	return &sentinelError{
 		message: fmt.Sprintf(format, args...),
 	}
 }
 
+// Join combines multiple errors into a single error with a shared stack frame.
+// It returns nil when no errors are provided.
 func Join(errs ...error) Error {
 	if len(errs) == 0 {
 		return nil
@@ -101,10 +117,12 @@ func wrap(err error, i int) Error {
 	}
 }
 
+// Wrap wraps err, capturing a stack frame.
 func Wrap(err error) Error {
 	return wrap(err, 0)
 }
 
+// HasTag searches the error chain for a tag and returns the first value found.
 func HasTag(err error, tag string) (any, bool) {
 	//nolint:errorlint // internal error library
 	if taggedErr, ok := err.(hasTags); ok {
