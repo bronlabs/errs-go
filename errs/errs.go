@@ -119,7 +119,7 @@ func wrap(err error, i int) Error {
 
 // Wrap wraps err, capturing a stack frame.
 func Wrap(err error) Error {
-	return wrap(err, 0)
+	return wrap(err, 1)
 }
 
 // HasTag searches the error chain for a tag and returns the first value found.
